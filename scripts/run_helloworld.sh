@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ $# -ne 7 ]; then
+if [ $# -ne 8 ]; then
   echo ""
-  echo "Usage: $0 <host_list> <server_list> <client_worker_threads> <staleness> <snapshot_dir> <snapshot_clock> <resume_clock>"
+  echo "Usage: $0 <host_list> <server_list> <client_worker_threads> <staleness> <snapshot_dir> <snapshot_clock> <resume_clock> <num_clock>"
   echo ""
   echo "<host_list>: a file that contains of list of host IPs with 1 IP per line, such as"
   echo "192.168.1.1"
@@ -21,6 +21,8 @@ if [ $# -ne 7 ]; then
   echo "<snapshot_clock>: how frequent a snapshot is taken, as explained in the manual"
   echo ""
   echo "<resume_clock>: from which snapshot to recover, as explained in the manual; set to 0 if not for recovery"
+  echo ""
+  echo "<num_iter>: number of clocks to run"
   exit
 fi
 
@@ -55,7 +57,7 @@ local_id_max=$(( local_id_min+num_server_threads_per_client\
 
 # application config
 num_tables=1
-num_iterations=10
+num_iterations=$8
 staleness=0
 
 snapshot_clock=$6
