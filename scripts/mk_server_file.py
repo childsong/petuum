@@ -63,7 +63,7 @@ def make_server_file(server_file, ip_list):
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:
-        print "Usage: %s <host file> <output server file> "
+        print "Usage: %s <host file> <output server file> " \
         "<num_app_threads_per_client>" % sys.argv[0]
         exit(0)
 
