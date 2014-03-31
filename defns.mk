@@ -22,7 +22,6 @@ PETUUM_LDFLAGS = -Wl,-rpath,$(PETUUM_THIRD_PARTY_LIB) \
           -L$(PETUUM_THIRD_PARTY_LIB) \
           -pthread -lrt -lnsl -luuid \
           -lzmq \
-          -ltbb \
           -lboost_thread \
           -lboost_system \
           -lglog \
