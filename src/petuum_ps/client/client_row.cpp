@@ -26,32 +26,18 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-// Author: Dai Wei (wdai@cs.cmu.edu)
-// Date: 2014.02.14
 
-#pragma once
-
+#include "petuum_ps/include/abstract_row.hpp"
+#include "petuum_ps/client/client_row.hpp"
+#include <memory>
 
 namespace petuum {
 
-// The Lockable concept (implemented as interface/abstract class) describes
-// the characteristics of types that provide exclusive blocking semantics for
-// execution agents (i.e. threads).
-class Lockable {
-public:
-  // Blocks until a lock can be obtained for the current execution agent. If
-  // an exception is thrown, no lock is obtained.
-  virtual void lock() = 0;
+ClientRow::ClientRow(const RowMetadata &metadata, AbstractRow* row_data) : 
+  num_refs_(0),
+  metadata_(metadata),
+  row_data_pptr_(new std::shared_ptr<AbstractRow>) {
+  (*row_data_pptr_).reset(row_data);
+}
 
-  // Releases the lock held by the execution agent. Throws no exceptions.
-  // requires: The current execution agent should hold the lock.
-  virtual void unlock() = 0;
-
-  // Attempts to acquire the lock for the current execution agent without
-  // blocking. If an exception is thrown, no lock is obtained.  Return true if
-  // the lock was acquired, false otherwise
-  virtual bool try_lock() = 0;
-
-};
-
-}   // namespace petuum
+}  // namespace petuum

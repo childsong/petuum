@@ -26,32 +26,34 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-// Author: Dai Wei (wdai@cs.cmu.edu)
-// Date: 2014.02.14
-
 #pragma once
-
 
 namespace petuum {
 
-// The Lockable concept (implemented as interface/abstract class) describes
-// the characteristics of types that provide exclusive blocking semantics for
-// execution agents (i.e. threads).
-class Lockable {
+struct RowMetadata {
 public:
-  // Blocks until a lock can be obtained for the current execution agent. If
-  // an exception is thrown, no lock is obtained.
-  virtual void lock() = 0;
+  RowMetadata() : clock_(0) { }
 
-  // Releases the lock held by the execution agent. Throws no exceptions.
-  // requires: The current execution agent should hold the lock.
-  virtual void unlock() = 0;
+  explicit RowMetadata(int32_t clock):
+    clock_(clock) {}
 
-  // Attempts to acquire the lock for the current execution agent without
-  // blocking. If an exception is thrown, no lock is obtained.  Return true if
-  // the lock was acquired, false otherwise
-  virtual bool try_lock() = 0;
+  RowMetadata(const RowMetadata& other) :
+    clock_(other.clock_) { }
 
+  RowMetadata operator=(const RowMetadata& other) {
+    clock_ = other.clock_;
+    return *this;
+  }
+
+  int32_t GetClock() const {
+    return clock_;
+  }
+
+  void SetClock(int32_t clock) {
+    clock_ = clock;
+  }
+private:
+  int32_t clock_;
 };
 
-}   // namespace petuum
+}
