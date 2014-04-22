@@ -103,6 +103,7 @@ void LDASampler::ReadData(bool zero_indexed) {
   // Count number of words from vocabulary file. 
   // Construct dict_.
   FILE *vocab_stream = fopen(vocab_file.c_str(), "r");
+  LOG(INFO) << "vocab_file " << vocab_file;
   CHECK_NOTNULL(vocab_stream);
   LOG(INFO) << "Reading from word file = " << vocab_file;
   int32_t num_global_words = 0;
@@ -129,6 +130,8 @@ void LDASampler::ReadData(bool zero_indexed) {
   context.set("num_docs", num_global_docs);
   LOG(INFO) << "Num of Training Docs: " << num_global_docs;
 
+  int base = 10;
+  char *endptr = NULL;
   int32_t num_local_words = 0;
   while (getline(&line, &num_bytes, data_stream) != -1) {
     // stat of a word
@@ -138,8 +141,10 @@ void LDASampler::ReadData(bool zero_indexed) {
     word_samplers_[word_id].Init(summary_row_, doc_topic_table_, word_id);
     while (*ptr != '\n') {
       while (*ptr != ' ') ++ptr; // goto next space
-      // read a doc_id:count pair
-      sscanf(++ptr, "%d:%d", &doc_id, &count);
+      doc_id = strtol(++ptr, &endptr, base);
+      ptr = endptr; // colon
+      count = strtol(++ptr, &endptr, base);
+      ptr = endptr;
       // Add stat to word sampler
       word_samplers_[word_id].AddDocTokens(doc_id, count);
       while (*ptr != ' ' && *ptr != '\n') ++ptr; // goto next space or \n
